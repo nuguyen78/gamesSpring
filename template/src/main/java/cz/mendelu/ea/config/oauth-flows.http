@@ -1,0 +1,53 @@
+# ==== Keycloak OAuth Demo ====
+
+# --- Resource Owner Password Credentials Grant ---
+
+# 1. Client sends POST request to Keycloak to exchange username and password for access token
+POST http://localhost:8091/realms/oath/protocol/openid-connect/token
+Content-Type: application/x-www-form-urlencoded
+
+grant_type=password &
+client_id=client1 &
+username=petr &
+password=123
+###
+
+# --- Client Credentials Grant
+
+# 1. Client sends POST request to Keycloak to exchange client credentials for access token
+POST http://localhost:8091/realms/oath/protocol/openid-connect/token
+Content-Type: application/x-www-form-urlencoded
+
+grant_type=client_credentials &
+client_id=client2 &
+client_secret=vq846kPOwnaccdX91Hi5Qp1Jbe2QUoLP
+###
+
+# --- Implicit Grant ---
+
+# 1. Redirect user to login page (open in browser, not here headless)
+# http://localhost:8091/realms/oauth-demo/protocol/openid-connect/auth?response_type=token&client_id=client1&redirect_uri=https://mendelu.cz
+
+# 2. User logs in by providing username and password directly to Keycloak
+
+# 3. Keycloak redirects user back to client's URL with access token in URL
+
+
+# --- Authorization Code Grant ---
+
+# 1. Redirect user to login page (open in browser, not here headless)
+# http://localhost:8091/realms/oauth-demo/protocol/openid-connect/auth?response_type=code&client_id=client1&redirect_uri=https://mendelu.cz
+
+# 2. User logs in by providing username and password directly to Keycloak
+
+# 3. Keycloak redirects user back to client's URL with authorization code in URL
+
+# 4. Client sends POST request to Keycloak to exchange authorization code for access token
+POST http://localhost:8091/realms/oauth-demo/protocol/openid-connect/token
+Content-Type: application/x-www-form-urlencoded
+
+grant_type=authorization_code &
+client_id=client1 &
+code=ca6437b4-dda4-404f-a8ea-2631adcc345a.7b83d5f3-4b3d-4327-be43-32047d9906fd.42d48609-29f0-40af-b15c-d25fbe3a8223 &
+redirect_uri=https://mendelu.cz
+###
