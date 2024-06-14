@@ -1,5 +1,9 @@
 package cz.mendelu.ea.domain.game;
 
+import cz.mendelu.ea.domain.category.Category;
+import cz.mendelu.ea.domain.category.CategoryRepository;
+import cz.mendelu.ea.domain.genre.Genre;
+import cz.mendelu.ea.domain.genre.GenreRepository;
 import cz.mendelu.ea.domain.review.ReviewRepository;
 import cz.mendelu.ea.domain.studio.StudioRepository;
 import cz.mendelu.ea.domain.studio.StudioService;
@@ -8,10 +12,8 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class GameService {
@@ -22,10 +24,16 @@ public class GameService {
 
     private final ReviewRepository reviewRepository;
 
-    public GameService(GameRepository gameRepository, StudioRepository studioRepository, ReviewRepository reviewRepository) {
+    private final GenreRepository genreRepository;
+
+    private final CategoryRepository categoryRepository;
+
+    public GameService(GameRepository gameRepository, StudioRepository studioRepository, ReviewRepository reviewRepository, GenreRepository genreRepository, CategoryRepository categoryRepository) {
         this.gameRepository = gameRepository;
         this.studioRepository = studioRepository;
         this.reviewRepository = reviewRepository;
+        this.genreRepository = genreRepository;
+        this.categoryRepository = categoryRepository;
     }
 
 
@@ -56,8 +64,48 @@ public class GameService {
         gameRepository.deleteById(id);
     }
 
-/*    public Optional<Game> getGame(UUID id){
-        return repository.findById(id);
-    }*/
+
+    // Method to retrieve top-rated games by genre ID
+    public List<Game> getTopRatedGamesByGenre(Integer genreId) {
+        // Retrieve all games
+        List<Game> allGames = gameRepository.findAll();
+
+        // Filter games by the specified genre ID and sort by metacritic score
+        List<Game> topRatedGames = allGames.stream()
+                .filter(game -> game.getGenres().stream().anyMatch(genre -> genre.getId() == genreId))
+                .sorted(Comparator.comparingInt(Game::getMetacriticScore).reversed())
+                .collect(Collectors.toList());
+
+        return topRatedGames;
+    }
+
+    public Map<String, Game> getMostReviewedGameByCategory() {
+        List<Category> categories = categoryRepository.findAll();
+        Map<String, Game> mostReviewedGamesByCategory = new HashMap<>();
+
+        for (Category category : categories) {
+            Game mostReviewedGame = category.getGames().stream()
+                    .max(Comparator.comparingInt(reviewRepository::countByGame))
+                    .orElse(null);
+            if (mostReviewedGame != null) {
+                mostReviewedGamesByCategory.put(category.getName(), mostReviewedGame);
+            }
+        }
+
+        return mostReviewedGamesByCategory;
+    }
+
+    public List<Game> getGamesByReleaseYearBetween(int minYear, int maxYear) {
+        return gameRepository.findAll().stream()
+                .filter(game -> {
+                    int releaseYear = game.getReleaseDate().toInstant().atZone(java.time.ZoneId.systemDefault()).toLocalDate().getYear();
+                    return releaseYear >= minYear && releaseYear <= maxYear;
+                })
+                .collect(Collectors.toList());
+    }
+
+    public List<Game> getAllGamesInCategory(int categoryId) {
+        return gameRepository.findByCategoryId(categoryId);
+    }
 
 }

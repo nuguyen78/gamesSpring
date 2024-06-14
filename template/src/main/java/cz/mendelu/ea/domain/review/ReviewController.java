@@ -12,6 +12,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/reviews")
 @Validated
@@ -43,5 +45,16 @@ public class ReviewController {
         reviewRequest.toReview(review, gameService);
         review = reviewService.createReview(review);
         return ObjectResponse.of(review, ReviewResponse::new);
+    }
+
+    @GetMapping(value = "/from-category/{categoryId}", produces = "application/json")
+    @Valid
+    public ArrayResponse<ReviewResponse> getAllReviewsFromCategory(@PathVariable int categoryId) {
+        List<Game> gamesInCategory = gameService.getAllGamesInCategory(categoryId);
+        List<Review> reviews = reviewService.getAllReviewsForGames(gamesInCategory);
+        return ArrayResponse.of(
+                reviews,
+                ReviewResponse::new
+        );
     }
 }

@@ -18,6 +18,8 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("games")
@@ -77,16 +79,48 @@ public class GameController {
         Game updatedGame = gameService.updateGame(game);
         return ObjectResponse.of(updatedGame, GameResponse::new);
     }
-/*
-    @DeleteMapping(value = "/{id}", produces = "application/json")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteGame(@PathVariable Integer id) {
-        gameService.deleteGame(id);
-    }*/
+
+
     @DeleteMapping(value = "/{id}", produces = "application/json")
     public ResponseEntity<String> deleteGame(@PathVariable Integer id) {
         gameService.deleteGame(id);
         return ResponseEntity.ok("Game was successfully deleted");
+    }
+
+/*    @GetMapping(value = "/highest-rated-per-genre", produces = "application/json")
+    @Valid
+    public Map<String, Game> getHighestRatedGamePerGenre() {
+        return gameService.findHighestRatedGamePerGenre();
+    }*/
+
+    @GetMapping(value = "/top-rated-by-genre/{genreId}", produces = "application/json")
+    @Valid
+    public ArrayResponse<GameResponse> getTopRatedGamesByGenre(@PathVariable Integer genreId) {
+        return ArrayResponse.of(
+                gameService.getTopRatedGamesByGenre(genreId),
+                GameResponse::new
+        );
+    }
+
+    @GetMapping(value = "/most-reviewed-per-category", produces = "application/json")
+    @Valid
+    public ObjectResponse<Map<String, GameResponse>> getMostReviewedGameByCategory() {
+        Map<String, Game> mostReviewedGamesByCategory = gameService.getMostReviewedGameByCategory();
+        return ObjectResponse.of(
+                mostReviewedGamesByCategory,
+                gamesMap -> gamesMap.entrySet().stream()
+                        .collect(Collectors.toMap(
+                                Map.Entry::getKey,
+                                entry -> new GameResponse(entry.getValue())
+                        ))
+        );
+    }
+
+    @GetMapping(value = "/get-games-by-release-date-between/{minYear}/{maxYear}", produces = "application/json")
+    @Valid
+    public ArrayResponse<GameResponse> getGamesByReleaseYearBetween(@PathVariable int minYear, @PathVariable int maxYear) {
+        List<Game> games = gameService.getGamesByReleaseYearBetween(minYear, maxYear);
+        return ArrayResponse.of(games, GameResponse::new);
     }
 
 }
