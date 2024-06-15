@@ -61,4 +61,15 @@ public class Game {
     )
     @EqualsAndHashCode.Exclude
     Set<Category> categories = new HashSet<>();
+
+
+    public Game(String name, Date releaseDate, String aboutTheGame, String supportUrl, int metacriticScore, Studio studio) {
+        this.name = name;
+        this.releaseDate = releaseDate;
+        this.aboutTheGame = aboutTheGame;
+        this.supportUrl = supportUrl;
+        this.metacriticScore = metacriticScore;
+        this.studio = studio;
+    }
+
 }

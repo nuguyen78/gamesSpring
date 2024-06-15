@@ -5,6 +5,7 @@ import cz.mendelu.ea.domain.category.CategoryRepository;
 import cz.mendelu.ea.domain.genre.Genre;
 import cz.mendelu.ea.domain.genre.GenreRepository;
 import cz.mendelu.ea.domain.review.ReviewRepository;
+import cz.mendelu.ea.domain.studio.Studio;
 import cz.mendelu.ea.domain.studio.StudioRepository;
 import cz.mendelu.ea.domain.studio.StudioService;
 import cz.mendelu.ea.utils.exceptions.NotFoundException;
@@ -37,13 +38,20 @@ public class GameService {
     }
 
 
-    public List<Game> getAllGames() {
+    /*public List<Game> getAllGames() {
         List<Game> games = new ArrayList<>();
-/*        if (games.isEmpty()) {
-            throw new NotFoundException();
-        }*/
+
         gameRepository.findAll().forEach(games::add);
         return games;
+    }*/
+    public List<Game> getAllGames(int page, int size) {
+        List<Game> movies = new ArrayList<>();
+        gameRepository.findAll().forEach(movies::add);
+        int start = page * size;
+        return movies.stream()
+                .skip(start)
+                .limit(size)
+                .collect(Collectors.toList());
     }
 
     public Game findGameById(Integer id) {
@@ -108,4 +116,15 @@ public class GameService {
         return gameRepository.findByCategoryId(categoryId);
     }
 
+    public Game getGameWithOldestStudio() {
+        // Find the studio with the earliest foundedDate
+        Studio oldestStudio = studioRepository.findAll().stream()
+                .min(Comparator.comparing(Studio::getFoundedDate))
+                .orElseThrow(() -> new NotFoundException("No studios found"));
+
+        // Find the first game associated with this studio
+        return gameRepository.findByStudio(oldestStudio).stream()
+                .findFirst()
+                .orElseThrow(() -> new NotFoundException("No games found for the oldest studio"));
+    }
 }

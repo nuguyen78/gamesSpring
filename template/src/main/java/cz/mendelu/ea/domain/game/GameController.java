@@ -5,7 +5,6 @@ import cz.mendelu.ea.config.PrincipalFactory;
 import cz.mendelu.ea.domain.category.CategoryService;
 import cz.mendelu.ea.domain.genre.GenreService;
 import cz.mendelu.ea.domain.studio.StudioService;
-import cz.mendelu.ea.utils.exceptions.NotFoundException;
 import cz.mendelu.ea.utils.response.ArrayResponse;
 import cz.mendelu.ea.utils.response.ObjectResponse;
 import jakarta.validation.Valid;
@@ -42,14 +41,21 @@ public class GameController {
         this.principalFactory = principalFactory;
     }
 
-    @GetMapping(value = "", produces = "application/json")
+/*    @GetMapping(value = "", produces = "application/json")
     @Valid
     public ArrayResponse<GameResponse> getGames() {
         return ArrayResponse.of(
                 gameService.getAllGames(),
                 GameResponse::new
         );
+    }*/
+
+    @GetMapping(value = "", produces = "application/json")
+    public ArrayResponse<GameResponse> getGames(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
+        List<Game> movies = gameService.getAllGames(page, size);
+        return ArrayResponse.of(movies, GameResponse::new);
     }
+
 
     @GetMapping(value = "/{id}", produces = "application/json")
     @Valid
@@ -87,12 +93,6 @@ public class GameController {
         return ResponseEntity.ok("Game was successfully deleted");
     }
 
-/*    @GetMapping(value = "/highest-rated-per-genre", produces = "application/json")
-    @Valid
-    public Map<String, Game> getHighestRatedGamePerGenre() {
-        return gameService.findHighestRatedGamePerGenre();
-    }*/
-
     @GetMapping(value = "/top-rated-by-genre/{genreId}", produces = "application/json")
     @Valid
     public ArrayResponse<GameResponse> getTopRatedGamesByGenre(@PathVariable Integer genreId) {
@@ -121,6 +121,12 @@ public class GameController {
     public ArrayResponse<GameResponse> getGamesByReleaseYearBetween(@PathVariable int minYear, @PathVariable int maxYear) {
         List<Game> games = gameService.getGamesByReleaseYearBetween(minYear, maxYear);
         return ArrayResponse.of(games, GameResponse::new);
+    }
+
+    @GetMapping(value = "/oldest-studio-game", produces = "application/json")
+    public ObjectResponse<GameResponse> getGameWithOldestStudio() {
+        Game game = gameService.getGameWithOldestStudio();
+        return ObjectResponse.of(game, GameResponse::new);
     }
 
 }

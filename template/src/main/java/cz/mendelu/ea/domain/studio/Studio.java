@@ -30,4 +30,10 @@ public class Studio {
 
     @NotNull
     private int numberOfWorkers;
+
+    public Studio(String name, Date foundedDate, int numberOfWorkers) {
+        this.name = name;
+        this.foundedDate = foundedDate;
+        this.numberOfWorkers = numberOfWorkers;
+    }
 }

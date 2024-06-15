@@ -12,8 +12,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import static io.restassured.RestAssured.given;
 import static io.restassured.RestAssured.when;
-import static org.hamcrest.Matchers.containsInAnyOrder;
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.*;
 
 @ActiveProfiles("test")
 @ExtendWith(SpringExtension.class)
@@ -34,115 +33,12 @@ public class StudioIntegrationTest {
     }
 
     @Test
-    public void testGetById() {
+    public void testGetStudios() {
         when()
-                .get("/festivals/100")
+                .get("/studio")
                 .then()
                 .statusCode(200)
-                .body("content.id", is(100))
-                .body("content.name", is("Coachella"))
-                .body("content.ticketPrice", is(2000.0F))
-                .body("content.bandIds", containsInAnyOrder("292a485f-a56a-4938-8f1a-bbbbbbbbbbb1", "292a485f-a56a-4938-8f1a-bbbbbbbbbbb2"));
-    }
-
-    @Test
-    public void testGetById_NotFound() {
-        when()
-                .get("/festivals/999")
-                .then()
-                .statusCode(404);
-    }
-
-    @Test
-    public void testCreate() {
-        Integer id = given()
-                .contentType("application/json")
-                .body("""
-                        {
-                            "name":"FestivalTest1",
-                            "ticketPrice":1500.0,
-                            "bandIds": ["292a485f-a56a-4938-8f1a-bbbbbbbbbbb1", "292a485f-a56a-4938-8f1a-bbbbbbbbbbb2"]
-                        }
-                        """)
-                .when()
-                .post("/festivals")
-                .then()
-                .statusCode(201)
-                .body("content.name", is("FestivalTest1"))
-                .body("content.ticketPrice", is(1500.0F))
-                .body("content.bandIds", containsInAnyOrder("292a485f-a56a-4938-8f1a-bbbbbbbbbbb1", "292a485f-a56a-4938-8f1a-bbbbbbbbbbb2"))
-                .extract()
-                .path("content.id");
-
-        when()
-                .get("/festivals/{id}", id)
-                .then()
-                .statusCode(200)
-                .body("content.id", is(id))
-                .body("content.name", is("FestivalTest1"))
-                .body("content.ticketPrice", is(1500.0F))
-                .body("content.bandIds", containsInAnyOrder("292a485f-a56a-4938-8f1a-bbbbbbbbbbb1", "292a485f-a56a-4938-8f1a-bbbbbbbbbbb2"));
-    }
-
-    @Test
-    public void testCreate_InvalidBandId() {
-        given()
-                .contentType("application/json")
-                .body("""
-                        {
-                            "name":"FestivalTest1",
-                            "ticketPrice": 1500.0,
-                            "bandIds": ["292a485f-a56a-4938-8f1a-bbbbbbbbbbb1", "invalid-game-id"]
-                        }
-                        """)
-                .when()
-                .post("/festivals")
-                .then()
-                .statusCode(400);
-    }
-
-    @Test
-    public void testCreate_InvalidTicketPrice() {
-        given()
-                .contentType("application/json")
-                .body("""
-                        {
-                            "name":"FestivalTest1",
-                            "ticketPrice": -100,
-                            "bandIds": ["292a485f-a56a-4938-8f1a-bbbbbbbbbbb1", "292a485f-a56a-4938-8f1a-bbbbbbbbbbb2"]
-                        }
-                        """)
-                .when()
-                .post("/festivals")
-                .then()
-                .statusCode(400);
-    }
-
-    @Test
-    public void testCreate_NonExistingBandId() {
-        given()
-                .contentType("application/json")
-                .body("""
-                        {
-                            "name":"FestivalTest1",
-                            "ticketPrice": 1500.0,
-                            "bandIds": ["292a485f-a56a-4938-8f1a-bbbbbbbbbbb1", "99999999-9999-9999-9999-999999999999"]
-                        }
-                        """)
-                .when()
-                .post("/festivals")
-                .then()
-                .statusCode(404);
-    }
-
-    @Test
-    public void testStatistics() {
-        when()
-                .get("/festivals/statistics")
-                .then()
-                .statusCode(200)
-                .body("content.idsOfFestivalWithPriceBetween1500And2000", containsInAnyOrder(100))
-                .body("content.countOfFestivalsWhereBandNameStartsWithU", is(1));
+                .body("items.size()", greaterThan(0)); // Adjust based on your test data
     }
 
 }
