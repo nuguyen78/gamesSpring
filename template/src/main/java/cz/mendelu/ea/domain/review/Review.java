@@ -31,4 +31,10 @@ public class Review {
     @JoinColumn(name = "game_id")
     private Game game;
 
+    public Review(String text, Date createdAt, Game game) {
+        this.text = text;
+        this.createdAt = createdAt;
+        this.game = game;
+    }
+
 }

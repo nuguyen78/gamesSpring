@@ -1,0 +1,13 @@
+
+### Get all studios
+GET http://localhost:8090/studio
+
+### Create a new studio
+POST http://localhost:8090/studio
+Content-Type: application/json
+
+{
+                            "name": "New Studio",
+                            "foundedDate": "2023-01-01",
+                            "numberOfWorkers": 25
+                        }

@@ -1,1 +1,3 @@
-http://localhost:8090/genres
+
+### Get all genres
+GET http://localhost:8090/genres

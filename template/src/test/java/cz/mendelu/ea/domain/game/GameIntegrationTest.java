@@ -1,6 +1,6 @@
 package cz.mendelu.ea.domain.game;
 
-import cz.mendelu.ea.utils.AuthHelper;
+import cz.mendelu.ea.domain.utils.AuthHelper;
 import io.restassured.RestAssured;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -77,9 +77,9 @@ public class GameIntegrationTest {
                             "aboutTheGame": "This is a new game.",
                             "supportUrl": "http://example.com",
                             "metacriticScore": 85,
-                            "studio": 1,
-                            "genres": [1, 2],
-                            "categories": [2, 3]
+                            "studioId": 1,
+                            "genreIds": [1, 2],
+                            "categoryIds": [1, 2]
                         }
                         """)
                 .when()

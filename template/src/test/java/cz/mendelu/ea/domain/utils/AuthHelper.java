@@ -1,4 +1,4 @@
-package cz.mendelu.ea.utils;
+package cz.mendelu.ea.domain.utils;
 
 import cz.mendelu.ea.domain.game.GameRequest;
 import io.restassured.http.ContentType;
@@ -37,6 +37,6 @@ public class AuthHelper {
     }
 
     public String login(String username) {
-        return login(username, "1234");
+        return login(username, "123");
     }
 }

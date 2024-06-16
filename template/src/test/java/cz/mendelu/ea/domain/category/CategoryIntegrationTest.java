@@ -1,4 +1,4 @@
-package cz.mendelu.ea.domain.studio;
+package cz.mendelu.ea.domain.category;
 
 import io.restassured.RestAssured;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,7 +19,7 @@ import static org.hamcrest.Matchers.*;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Sql("/test-data/cleanup.sql")
 @Sql("/test-data/base-data.sql")
-public class StudioIntegrationTest {
+public class CategoryIntegrationTest {
 
     private final static String BASE_URI = "http://localhost";
 
@@ -33,56 +33,28 @@ public class StudioIntegrationTest {
     }
 
     @Test
-    public void testGetStudios() {
+    public void testGetCategories() {
         when()
-                .get("/studio")
+                .get("/categories")
                 .then()
                 .statusCode(200)
-                .body("items.size()", greaterThan(0)); // Adjust based on your test data
+                .body("items.size()", greaterThan(0));
     }
 
-
     @Test
-    public void testGetStudioById() {
+    public void testGetCategoryById() {
         when()
-                .get("/studio/1")
+                .get("/categories/1")
                 .then()
                 .statusCode(200)
                 .body("content.id", is(1));
     }
 
     @Test
-    public void testGetGameById_NotFound() {
+    public void testGetCategoryById_NotFound() {
         when()
-                .get("/studio/999")
+                .get("/categories/999")
                 .then()
                 .statusCode(404);
     }
-
-    @Test
-    public void testCreateStudio() {
-        int id = given()
-                .contentType("application/json")
-                .body("""
-                        {
-                            "name": "New Studio",
-                            "foundedDate": "2023-01-01",
-                            "numberOfWorkers": 25
-                        }
-                        """)
-                .when()
-                    .post("/studio")
-                .then()
-                    .statusCode(200)
-                .extract()
-                    .path("id");
-
-        when()
-                .get("/studio/{id}", id)
-                .then()
-                .statusCode(200)
-                .body("content.id", is(id))
-                .body("content.name", is("New Studio"));
-    }
-
 }

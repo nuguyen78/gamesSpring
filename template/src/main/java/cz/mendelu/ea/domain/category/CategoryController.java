@@ -1,6 +1,8 @@
 package cz.mendelu.ea.domain.category;
 
+import cz.mendelu.ea.domain.studio.StudioResponse;
 import cz.mendelu.ea.utils.exceptions.NotFoundException;
+import cz.mendelu.ea.utils.response.ArrayResponse;
 import cz.mendelu.ea.utils.response.ObjectResponse;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,8 +25,11 @@ public class CategoryController {
 
     @GetMapping(value = "", produces = "application/json")
     @Valid
-    public List<Category> getAllCategories() {
-        return categoryService.getAllCategories();
+    public ArrayResponse<CategoryResponse> getAllCategories() {
+        return ArrayResponse.of(
+                categoryService.getAllCategories(),
+                CategoryResponse::new
+        );
     }
 
     @GetMapping(value = "/{id}", produces = "application/json")

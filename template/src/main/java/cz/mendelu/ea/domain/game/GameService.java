@@ -127,4 +127,5 @@ public class GameService {
                 .findFirst()
                 .orElseThrow(() -> new NotFoundException("No games found for the oldest studio"));
     }
+
 }

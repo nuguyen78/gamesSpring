@@ -1,0 +1,10 @@
+### Get all categories
+GET http://localhost:8090/categories
+
+### Create a new studio
+POST http://localhost:8090/categories
+Content-Type: application/json
+
+{
+  "name": "New Category"
+}

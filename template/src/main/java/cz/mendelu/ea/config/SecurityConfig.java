@@ -31,7 +31,7 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests((authorize) -> authorize
                         //.requestMatchers(HttpMethod.GET, "/games/**").hasAnyRole("SUPERADMIN", "BASIC")
-                        //.requestMatchers(HttpMethod.POST, "/games").hasAnyRole("SUPERADMIN")
+                        .requestMatchers(HttpMethod.POST, "/games").hasAnyRole("SUPERADMIN")
                         .anyRequest().permitAll()
                 ).csrf(csrf -> csrf
                         .ignoringRequestMatchers("/**"))
