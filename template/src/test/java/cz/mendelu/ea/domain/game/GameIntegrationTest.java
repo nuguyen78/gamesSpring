@@ -53,7 +53,7 @@ public class GameIntegrationTest {
                 .then()
                 .statusCode(200)
                 .body("content.id", is(1))
-                .body("content.name", is("Game One")); // Adjust based on your test data
+                .body("content.name", is("Batman: Arkham Knight")); // Adjust based on your test data
     }
 
     @Test
