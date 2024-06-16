@@ -75,7 +75,7 @@ public class GameService {
 
     // Method to retrieve top-rated games by genre ID
     public List<Game> getTopRatedGamesByGenre(Integer genreId) {
-        // Retrieve all games
+        // Get all games
         List<Game> allGames = gameRepository.findAll();
 
         // Filter games by the specified genre ID and sort by metacritic score

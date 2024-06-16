@@ -50,7 +50,6 @@ public class GameResponse {
         this.metacriticScore = game.getMetacriticScore();
         this.studioName = game.getStudio().getName();
         this.genres = game.getGenres().stream().map(Genre::getName).collect(Collectors.toSet());
-        //this.genres = {'test1', 'test2', 'test3'};
         this.categories = game.getCategories().stream().map(Category::getName).collect(Collectors.toSet());
     }
 

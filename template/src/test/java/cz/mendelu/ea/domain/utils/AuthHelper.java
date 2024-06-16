@@ -20,7 +20,6 @@ public class AuthHelper {
 
     public String login(String username, String password) {
         // call token endpoint using http request and get token
-        //var gameRequest = new GameRequest("game", 2021, List.of("action", "adventure");
 
         return given()
                 .contentType(ContentType.URLENC)
