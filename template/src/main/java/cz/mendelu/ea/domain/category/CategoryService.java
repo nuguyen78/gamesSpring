@@ -30,14 +30,4 @@ public class CategoryService {
     }
 
     public Category createCategory(Category category) { return categoryRepository.save(category); }
-
-/*    @PutMapping("/{id}")
-    public Category updateCategory(@PathVariable int id, @RequestBody Category category) {
-        return categoryService.updateCategory(id, category);
-    }*/
-
-/*    @DeleteMapping("/{id}")
-    public void deleteCategory(@PathVariable int id) {
-        categoryRepository.deleteCategory(id);
-    }*/
 }
