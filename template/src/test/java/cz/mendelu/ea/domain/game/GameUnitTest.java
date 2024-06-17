@@ -129,4 +129,29 @@ public class GameUnitTest {
         assertThat(mostReviewedGamesByCategory.size(), is(1));
         assertThat(mostReviewedGamesByCategory.get("Action"), is(game2));
     }
+
+    @Test
+    void testGetGameWithOldestStudio() {
+        when(gameService.getGameWithOldestStudio()).thenReturn(game1);
+
+        ObjectResponse<GameResponse> response = gameController.getGameWithOldestStudio();
+
+        verify(gameService).getGameWithOldestStudio();
+        assertThat(response.getContent().getName(), is("Game One"));
+    }
+
+    @Test
+    void testGetTopRatedGamesByGenre() {
+        int genreId = 1;
+        List<Game> topRatedGames = Arrays.asList(game1, game2);
+
+        when(gameService.getTopRatedGamesByGenre(genreId)).thenReturn(topRatedGames);
+
+        ArrayResponse<GameResponse> response = gameController.getTopRatedGamesByGenre(genreId);
+
+        verify(gameService).getTopRatedGamesByGenre(genreId);
+        assertThat(response.getItems().size(), is(2));
+        assertThat(response.getItems().get(0).getName(), is("Game One"));
+        assertThat(response.getItems().get(1).getName(), is("Game Two"));
+    }
 }
